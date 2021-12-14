@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DotNetCoreDecorators;
 using Microsoft.Extensions.Logging;
+using Service.Core.Grpc.Models;
 using Service.EmailSender.Grpc;
 using Service.EmailSender.Grpc.Models;
 using Service.PasswordRecovery.Domain.Models;
@@ -22,23 +24,26 @@ namespace Service.EmailTrigger.Jobs
 
 		private async ValueTask HandleEvent(IReadOnlyList<RecoveryInfoServiceBusModel> events)
 		{
-			var taskList = new List<Task>();
+			var taskList = new List<ValueTask<CommonGrpcResponse>>();
 
 			foreach (RecoveryInfoServiceBusModel message in events)
 			{
 				string email = message.Email;
 
-				Task<CommonGrpcResponse> task = _emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
+				taskList.Add(_emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
 				{
 					Email = email,
 					Hash = message.Hash
-				}).AsTask();
-
-				taskList.Add(task);
+				}));
 
 				_logger.LogInformation("Sending RecoveryPasswordEmail to user {email}", email);
 			}
-			await Task.WhenAll(taskList);
+
+			await Task.WhenAll(
+				taskList
+					.Where(task => !task.IsCompletedSuccessfully)
+					.Select(task => task.AsTask())
+				);
 		}
 	}
 }

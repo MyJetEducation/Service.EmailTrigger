@@ -12,8 +12,9 @@
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="MyJetEducation.Service.EmailSender.Client" Version="1.0.1" />
-    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.1" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.4" />
+    <PackageReference Include="MyJetEducation.Service.EmailSender.Client" Version="1.0.2" />
+    <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.2" />
     <PackageReference Include="MyJetWallet.Sdk.Authorization" Version="2.1.0" />
     <PackageReference Include="MyJetWallet.Sdk.Grpc" Version="2.0.0" />
     <PackageReference Include="MyJetWallet.Sdk.GrpcMetrics" Version="2.0.4" />
@@ -25,6 +26,7 @@
     <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.2" />
     <PackageReference Include="protobuf-net.Grpc.AspNetCore" Version="1.0.152" />
     <PackageReference Include="SimpleTrading.BaseMetrics" Version="1.0.3" />
+    <PackageReference Include="SimpleTrading.Common" Version="1.0.32" />
     <PackageReference Include="SimpleTrading.PersonalData.Abstractions" Version="1.0.20" />
     <PackageReference Include="SimpleTrading.ServiceStatusReporterConnector" Version="1.0.9" />
   </ItemGroup>
@@ -38,10 +40,6 @@
     <None Update="Dockerfile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
