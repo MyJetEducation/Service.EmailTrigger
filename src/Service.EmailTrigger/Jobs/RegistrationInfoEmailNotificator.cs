@@ -31,6 +31,7 @@ namespace Service.EmailTrigger.Jobs
 
 				await _emailSender.SendRegistrationConfirmEmailAsync(new RegistrationConfirmGrpcRequest
 				{
+					Email = email,
 					Hash = message.Hash
 				});
 			}
