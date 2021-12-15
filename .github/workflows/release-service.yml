@@ -48,7 +48,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         path: ./publish-api
-        registry: docker.pkg.github.com
+#        registry: docker.pkg.github.com
+        registry: ghcr.io
         repository: ${{ secrets.ORG_NAME }}/service.emailtrigger/service.emailtrigger
         tag_with_ref: true
         build_args: app_version=service.emailtrigger:${{ steps.extract_branch.outputs.branch }},app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
