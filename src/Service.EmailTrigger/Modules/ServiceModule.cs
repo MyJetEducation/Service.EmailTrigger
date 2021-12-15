@@ -13,12 +13,10 @@ namespace Service.EmailTrigger.Modules
 	{
 		protected override void Load(ContainerBuilder builder)
 		{
-			const string queueName = "MyJetEducation-EmailTrigger";
-
 			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
 			
-			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, queueName, TopicQueueType.PermanentWithSingleConnection);
-			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, queueName, TopicQueueType.PermanentWithSingleConnection);
+			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, "MyJetEducation-EmailTrigger-RecoveryInfo", TopicQueueType.PermanentWithSingleConnection);
+			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, "MyJetEducation-EmailTrigger-RegistrationInfo", TopicQueueType.PermanentWithSingleConnection);
 
 			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
 
