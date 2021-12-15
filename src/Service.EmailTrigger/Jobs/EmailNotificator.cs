@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DotNetCoreDecorators;
 using Microsoft.Extensions.Logging;
-using Service.Core.Grpc.Models;
 using Service.EmailSender.Grpc;
 using Service.EmailSender.Grpc.Models;
 using Service.PasswordRecovery.Domain.Models;
@@ -26,36 +24,35 @@ namespace Service.EmailTrigger.Jobs
 			confirmSubscriber.Subscribe(HandleConfirmEvent);
 		}
 
-		private async ValueTask HandleRecoveryEvent(IReadOnlyList<RecoveryInfoServiceBusModel> events) => await WaitAllTasks(
-			events.Select(message =>
+		private async ValueTask HandleRecoveryEvent(IReadOnlyList<RecoveryInfoServiceBusModel> events)
+		{
+			foreach (RecoveryInfoServiceBusModel message in events)
 			{
 				string email = message.Email;
 
 				_logger.LogInformation("Sending RecoveryPasswordEmail to user {email}", email);
 
-				return _emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
+				await _emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
 				{
 					Email = email,
 					Hash = message.Hash
 				});
-			}));
+			}
+		}
 
-		private async ValueTask HandleConfirmEvent(IReadOnlyList<RegistrationInfoServiceBusModel> events) => await WaitAllTasks(
-			events.Select(message =>
+		private async ValueTask HandleConfirmEvent(IReadOnlyList<RegistrationInfoServiceBusModel> events)
+		{
+			foreach (RegistrationInfoServiceBusModel message in events)
 			{
 				string email = message.Email;
 
 				_logger.LogInformation("Sending RegistrationConfirmEmail to user {email}", email);
 
-				return _emailSender.SendRegistrationConfirmEmailAsync(new RegistrationConfirmGrpcRequest
+				await _emailSender.SendRegistrationConfirmEmailAsync(new RegistrationConfirmGrpcRequest
 				{
 					Hash = message.Hash
 				});
-			}));
-
-		private static Task WaitAllTasks(IEnumerable<ValueTask<CommonGrpcResponse>> taskList) => Task.WhenAll(
-			taskList
-				.Where(task => !task.IsCompletedSuccessfully)
-				.Select(task => task.AsTask()));
+			}
+		}
 	}
 }
