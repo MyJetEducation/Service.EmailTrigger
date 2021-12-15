@@ -43,10 +43,20 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         path: ./publish-api
-        registry: docker.pkg.github.com
+#        registry: docker.pkg.github.com
+        registry: ghcr.io
         repository: ${{ secrets.ORG_NAME }}/service.emailtrigger/service.emailtrigger-test
         tags: latest
         build_args: app_version=service.emailtrigger-test:latest,app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
+
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        script: cd /home/monfex/Services/Service.EmailTrigger && docker-compose pull && docker-compose up -d
 
 #    - name: Publish image Azure
 #      uses: docker/build-push-action@v1
