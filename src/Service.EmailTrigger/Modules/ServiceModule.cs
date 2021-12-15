@@ -14,14 +14,20 @@ namespace Service.EmailTrigger.Modules
 		protected override void Load(ContainerBuilder builder)
 		{
 			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
-			
-			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, "MyJetEducation-EmailTrigger-RecoveryInfo", TopicQueueType.PermanentWithSingleConnection);
-			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, "MyJetEducation-EmailTrigger-RegistrationInfo", TopicQueueType.PermanentWithSingleConnection);
+
+			const string queueName = "MyJetEducation-EmailTrigger";
+			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
+			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
 
 			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
 
 			builder
-				.RegisterType<EmailNotificator>()
+				.RegisterType<RecoveryInfoEmailNotificator>()
+				.AutoActivate()
+				.SingleInstance();
+
+			builder
+				.RegisterType<RegistrationInfoEmailNotificator>()
 				.AutoActivate()
 				.SingleInstance();
 		}
