@@ -5,6 +5,7 @@ using MyServiceBus.TcpClient;
 using Service.EmailSender.Client;
 using Service.EmailTrigger.Jobs;
 using Service.PasswordRecovery.Domain.Models;
+using Service.Registration.Domain.Models;
 
 namespace Service.EmailTrigger.Modules
 {
@@ -16,6 +17,7 @@ namespace Service.EmailTrigger.Modules
 
 			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
 			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
+			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
 
 			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
 
