@@ -16,8 +16,9 @@ namespace Service.EmailTrigger.Modules
 			const string queueName = "MyJetEducation-EmailTrigger";
 
 			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
-			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
-			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
+			
+			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, queueName, TopicQueueType.PermanentWithSingleConnection);
+			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, queueName, TopicQueueType.PermanentWithSingleConnection);
 
 			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
 
