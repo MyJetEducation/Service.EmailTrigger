@@ -26,50 +26,36 @@ namespace Service.EmailTrigger.Jobs
 			confirmSubscriber.Subscribe(HandleConfirmEvent);
 		}
 
-		private async ValueTask HandleRecoveryEvent(IReadOnlyList<RecoveryInfoServiceBusModel> events)
-		{
-			var taskList = new List<ValueTask<CommonGrpcResponse>>();
-
-			foreach (RecoveryInfoServiceBusModel message in events)
+		private async ValueTask HandleRecoveryEvent(IReadOnlyList<RecoveryInfoServiceBusModel> events) => await WaitAllTasks(
+			events.Select(message =>
 			{
 				string email = message.Email;
 
-				taskList.Add(_emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
+				_logger.LogInformation("Sending RecoveryPasswordEmail to user {email}", email);
+
+				return _emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
 				{
 					Email = email,
 					Hash = message.Hash
-				}));
+				});
+			}));
 
-				_logger.LogInformation("Sending RecoveryPasswordEmail to user {email}", email);
-			}
-
-			await WaitAllTasks(taskList);
-		}
-
-		private async ValueTask HandleConfirmEvent(IReadOnlyList<RegistrationInfoServiceBusModel> events)
-		{
-			var taskList = new List<ValueTask<CommonGrpcResponse>>();
-
-			foreach (RegistrationInfoServiceBusModel message in events)
+		private async ValueTask HandleConfirmEvent(IReadOnlyList<RegistrationInfoServiceBusModel> events) => await WaitAllTasks(
+			events.Select(message =>
 			{
 				string email = message.Email;
 
-				taskList.Add(_emailSender.SendRegistrationConfirmEmailAsync(new RegistrationConfirmGrpcRequest
+				_logger.LogInformation("Sending RegistrationConfirmEmail to user {email}", email);
+
+				return _emailSender.SendRegistrationConfirmEmailAsync(new RegistrationConfirmGrpcRequest
 				{
 					Hash = message.Hash
-				}));
+				});
+			}));
 
-				_logger.LogInformation("Sending RegistrationConfirmEmail to user {email}", email);
-			}
-
-			await WaitAllTasks(taskList);
-		}
-
-		private static async Task WaitAllTasks(List<ValueTask<CommonGrpcResponse>> taskList) =>
-			await Task.WhenAll(
-				taskList
-					.Where(task => !task.IsCompletedSuccessfully)
-					.Select(task => task.AsTask())
-				);
+		private static Task WaitAllTasks(IEnumerable<ValueTask<CommonGrpcResponse>> taskList) => Task.WhenAll(
+			taskList
+				.Where(task => !task.IsCompletedSuccessfully)
+				.Select(task => task.AsTask()));
 	}
 }
