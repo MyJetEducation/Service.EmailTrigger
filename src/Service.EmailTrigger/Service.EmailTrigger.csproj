@@ -12,7 +12,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.6" />
+    <PackageReference Include="MyJetEducation.Service.Core.Client" Version="1.0.8" />
     <PackageReference Include="MyJetEducation.Service.EmailSender.Client" Version="1.0.3" />
     <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.2" />
     <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.1" />
