@@ -11,7 +11,7 @@
     <PackageReference Include="MyJetEducation.Service.EmailSender.Client" Version="1.0.4" />
     <PackageReference Include="MyJetEducation.Service.PasswordRecovery.Client" Version="1.0.3" />
     <PackageReference Include="MyJetEducation.Service.Registration.Client" Version="1.0.6" />
-    <PackageReference Include="MyJetEducation.Service.ServiceBus" Version="1.0.5" />
+    <PackageReference Include="MyJetEducation.Service.ServiceBus" Version="1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
