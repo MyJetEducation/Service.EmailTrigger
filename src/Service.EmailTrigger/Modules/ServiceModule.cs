@@ -1,35 +1,23 @@
 ﻿using Autofac;
-using MyJetWallet.Sdk.ServiceBus;
-using MyServiceBus.Abstractions;
 using MyServiceBus.TcpClient;
 using Service.EmailSender.Client;
-using Service.EmailTrigger.Jobs;
 using Service.PasswordRecovery.Domain.Models;
 using Service.Registration.Domain.Models;
+using Service.ServiceBus.Services;
 
 namespace Service.EmailTrigger.Modules
 {
 	public class ServiceModule : Module
 	{
+		private const string QueueName = "MyJetEducation-EmailTrigger";
+
 		protected override void Load(ContainerBuilder builder)
 		{
-			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
-
-			const string queueName = "MyJetEducation-EmailTrigger";
-			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
-			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, queueName, TopicQueueType.Permanent);
-
 			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
 
-			builder
-				.RegisterType<RecoveryInfoEmailNotificator>()
-				.AutoActivate()
-				.SingleInstance();
-
-			builder
-				.RegisterType<RegistrationInfoEmailNotificator>()
-				.AutoActivate()
-				.SingleInstance();
+			MyServiceBusTcpClient serviceBusClient = builder.RegisterServiceBusClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
+			builder.RegisterServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, QueueName);
+			builder.RegisterServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, QueueName);
 		}
 	}
 }
