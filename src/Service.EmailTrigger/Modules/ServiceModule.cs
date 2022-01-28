@@ -1,9 +1,9 @@
 ﻿using Autofac;
+using MyJetWallet.Sdk.ServiceBus;
+using MyServiceBus.Abstractions;
 using MyServiceBus.TcpClient;
 using Service.EmailSender.Client;
-using Service.PasswordRecovery.Domain.Models;
-using Service.Registration.Domain.Models;
-using Service.ServiceBus.Services;
+using Service.ServiceBus.Models;
 
 namespace Service.EmailTrigger.Modules
 {
@@ -15,9 +15,9 @@ namespace Service.EmailTrigger.Modules
 		{
 			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
 
-			MyServiceBusTcpClient serviceBusClient = builder.RegisterServiceBusClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
-			builder.RegisterServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, QueueName);
-			builder.RegisterServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, QueueName);
+			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
+			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, QueueName, TopicQueueType.Permanent);
+			builder.RegisterMyServiceBusSubscriberBatch<RegistrationInfoServiceBusModel>(serviceBusClient, RegistrationInfoServiceBusModel.TopicName, QueueName, TopicQueueType.Permanent);
 		}
 	}
 }
