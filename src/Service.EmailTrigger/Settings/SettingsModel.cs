@@ -17,7 +17,7 @@ namespace Service.EmailTrigger.Settings
 		[YamlProperty("EmailTrigger.ServiceBusReader")]
 		public string ServiceBusReader { get; set; }
 
-		[YamlProperty("EmailTrigger.EmailSenderGrpcServiceUrl")]
-		public string EmailSenderGrpcServiceUrl { get; set; }
+		[YamlProperty("EmailTrigger.EmailSenderServiceUrl")]
+		public string EmailSenderServiceUrl { get; set; }
 	}
 }

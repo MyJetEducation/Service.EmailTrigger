@@ -14,7 +14,7 @@ namespace Service.EmailTrigger.Modules
 
 		protected override void Load(ContainerBuilder builder)
 		{
-			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderGrpcServiceUrl);
+			builder.RegisterEmailSenderClient(Program.Settings.EmailSenderServiceUrl);
 
 			MyServiceBusTcpClient serviceBusClient = builder.RegisterMyServiceBusTcpClient(Program.ReloadedSettings(e => e.ServiceBusReader), Program.LogFactory);
 			builder.RegisterMyServiceBusSubscriberBatch<RecoveryInfoServiceBusModel>(serviceBusClient, RecoveryInfoServiceBusModel.TopicName, QueueName, TopicQueueType.Permanent);
@@ -23,7 +23,7 @@ namespace Service.EmailTrigger.Modules
 
 			builder.RegisterType<RecoveryInfoEmailNotificator>().AutoActivate().SingleInstance();
 			builder.RegisterType<RegistrationInfoEmailNotificator>().AutoActivate().SingleInstance();
-			builder.RegisterType<ChangeEmailServiceBusModel>().AutoActivate().SingleInstance();
+			builder.RegisterType<ChangeEmailNotificator>().AutoActivate().SingleInstance();
 		}
 	}
 }
