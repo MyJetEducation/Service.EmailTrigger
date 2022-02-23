@@ -27,7 +27,7 @@ namespace Service.EmailTrigger.Jobs
 			{
 				string email = message.Email;
 
-				_logger.LogInformation("Sending RegistrationConfirmEmail to user {email}", email);
+				_logger.LogInformation("Sending RegistrationConfirmGrpcRequest for user: {email}", email);
 
 				await _emailSender.SendRegistrationConfirmEmailAsync(new RegistrationConfirmGrpcRequest
 				{

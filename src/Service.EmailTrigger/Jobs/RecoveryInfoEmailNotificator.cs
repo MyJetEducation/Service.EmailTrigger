@@ -27,7 +27,7 @@ namespace Service.EmailTrigger.Jobs
 			{
 				string email = message.Email;
 
-				_logger.LogInformation("Sending RecoveryPasswordEmail to user {email}", email);
+				_logger.LogInformation("Sending RecoveryInfoGrpcRequest for user: {email}", email);
 
 				await _emailSender.SendRecoveryPasswordEmailAsync(new RecoveryInfoGrpcRequest
 				{
